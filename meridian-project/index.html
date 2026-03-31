@@ -1,1 +1,2295 @@
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meridian — Performance Marketing Agency</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        @font-face {
+            font-family: 'Garamond Nova Local';
+            src: url('./fonts/garamond-nova-pro-condensed-italic.otf') format('opentype');
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'Garamond Nova Local';
+            src: url('./fonts/garamond-nova-pro-condensed-italic.otf') format('opentype');
+            font-style: italic;
+        }
+
+        :root {
+            --black: #090909;
+            --off-black: #111111;
+            --card: #161616;
+            --border: rgba(255, 255, 255, 0.07);
+            --white: #f5f2ee;
+            --muted: rgba(245, 242, 238, 0.45);
+            --accent: #e84c1e;
+            --accent-glow: rgba(232, 76, 30, 0.25);
+            --accent2: #ff9f6b;
+            --serif: 'Garamond Nova Local', 'Cormorant Garamond', Georgia, serif;
+            --display: 'Bebas Neue', sans-serif;
+            --sans: 'DM Sans', sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: var(--black);
+            color: var(--white);
+            font-family: var(--sans);
+            font-weight: 300;
+            overflow-x: hidden;
+            cursor: none;
+            line-height: 1.6;
+        }
+
+        /* CUSTOM CURSOR */
+        .cursor {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: var(--accent);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: width 0.2s, height 0.2s, background 0.2s;
+        }
+
+        .cursor-ring {
+            position: fixed;
+            width: 36px;
+            height: 36px;
+            border: 1px solid rgba(232, 76, 30, 0.5);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9998;
+            transform: translate(-50%, -50%);
+            transition: all 0.15s ease;
+        }
+
+        body:has(a:hover) .cursor,
+        body:has(button:hover) .cursor {
+            width: 18px;
+            height: 18px;
+        }
+
+        body:has(a:hover) .cursor-ring,
+        body:has(button:hover) .cursor-ring {
+            width: 56px;
+            height: 56px;
+            opacity: 0.4;
+        }
+
+        /* FLOATING PILL NAV */
+        .nav-wrapper {
+            position: fixed;
+            top: 32px;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            pointer-events: none;
+        }
+
+        nav {
+            pointer-events: auto;
+            background: rgba(17, 17, 17, 0.7);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 40px;
+            color: var(--white);
+            text-decoration: none;
+            padding: 0 8px;
+            margin-right: 8px;
+        }
+
+        .nav-logo svg {
+            width: 32px;
+            height: 32px;
+        }
+
+        .nav-logo .dot {
+            width: 12px;
+            height: 12px;
+            background: var(--accent);
+            border-radius: 50%;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            padding-left: 8px;
+        }
+
+        .nav-links a {
+            font-size: 13px;
+            font-weight: 400;
+            color: var(--muted);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--white);
+        }
+
+        .nav-cta {
+            background: var(--accent);
+            color: var(--white);
+            padding: 10px 24px;
+            border-radius: 100px;
+            border: none;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: none;
+            transition: transform 0.2s, background 0.2s;
+            text-decoration: none;
+        }
+
+        .nav-cta:hover {
+            background: #d44018;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px var(--accent-glow);
+        }
+
+        /* HERO (REFERENCE MATCHED) */
+        .hero {
+            min-height: 100vh;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 180px 24px 100px;
+        }
+
+        .hero-glow-layer {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translate(-50%, 40%);
+            width: 80vw;
+            height: 40vw;
+            border-radius: 50%;
+            background: radial-gradient(ellipse at center, rgba(232, 76, 30, 0.4) 0%, rgba(255, 159, 107, 0.1) 40%, transparent 70%);
+            filter: blur(80px);
+            opacity: 0.8;
+            z-index: -2;
+            pointer-events: none;
+        }
+
+        .hero-glow-core {
+            position: absolute;
+            bottom: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30vw;
+            height: 10vw;
+            border-radius: 50%;
+            background: var(--accent);
+            filter: blur(100px);
+            opacity: 0.5;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* User avatars pill */
+        .hero-proof {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 6px 16px 6px 6px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            margin-bottom: 32px;
+            animation: fadeUp 0.8s ease forwards;
+        }
+
+        .avatars {
+            display: flex;
+        }
+
+        .avatars div {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #222;
+            border: 2px solid var(--card);
+            margin-left: -10px;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .avatars div:first-child {
+            margin-left: 0;
+            background: var(--accent);
+        }
+
+        .hero-proof-text {
+            font-size: 12px;
+            color: var(--muted);
+            font-weight: 400;
+        }
+
+        .hero-proof-text span {
+            color: var(--accent2);
+            font-weight: 600;
+        }
+
+        /* Updated Typography for Hero */
+        .hero-h1 {
+            font-family: var(--sans);
+            font-size: clamp(48px, 6vw, 84px);
+            font-weight: 500;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+            color: var(--white);
+            margin-bottom: 24px;
+            max-width: 900px;
+            animation: fadeUp 1s ease 0.1s both;
+        }
+
+        /* If replacing Bebas Neue for Hero, but since prompt asked for the exact tokens, I use DM Sans for elegance and Bexas for display sections */
+        .hero-h1 em {
+            font-family: var(--serif);
+            font-style: italic;
+            font-weight: 200;
+            color: var(--accent2);
+            font-size: 1em;
+        }
+
+        .hero-sub {
+            font-size: 18px;
+            line-height: 1.6;
+            color: var(--muted);
+            max-width: 600px;
+            margin: 0 auto 40px;
+            animation: fadeUp 1s ease 0.2s both;
+        }
+
+        .hero-actions {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            animation: fadeUp 1s ease 0.3s both;
+        }
+
+        /* TRUSTED SECTION */
+        .trusted-section {
+            padding: 100px 60px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .trusted-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            max-width: 1200px;
+            height: 100%;
+            background: radial-gradient(ellipse at center, var(--accent-glow) 0%, transparent 70%);
+            border-radius: 50%;
+            z-index: -1;
+            pointer-events: none;
+            filter: blur(40px);
+        }
+
+        .trusted-content {
+            max-width: 900px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .trusted-heading {
+            font-family: var(--sans);
+            font-size: clamp(24px, 4vw, 36px);
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+            margin-bottom: 40px;
+        }
+
+        .trusted-muted {
+            color: var(--muted);
+            font-weight: 400;
+        }
+
+        .trusted-solid {
+            color: var(--white);
+            font-weight: 600;
+        }
+
+        .trusted-marquee {
+            padding: 40px 0;
+            width: 100%;
+            overflow: hidden;
+            display: flex;
+            -webkit-mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+            mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+        }
+
+        .trusted-track {
+            display: flex;
+            width: max-content;
+            animation: autoScroll 40s linear infinite;
+        }
+
+        .trusted-track:hover {
+            animation-play-state: paused;
+        }
+
+        .trusted-slide {
+            display: flex;
+            align-items: center;
+            gap: 64px;
+            padding-right: 64px;
+        }
+
+        .trusted-slide img {
+            height: 24px;
+            object-fit: contain;
+            opacity: 0.6;
+            transition: opacity 0.3s ease;
+            filter: brightness(0) invert(1);
+        }
+
+        .trusted-slide img:hover {
+            opacity: 1;
+        }
+
+        /* GLOBAL SECTIONS */
+        section {
+            padding: 100px 60px;
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .section-tag {
+            display: inline-block;
+            padding: 6px 16px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            font-size: 12px;
+            color: var(--muted);
+            margin-bottom: 32px;
+            letter-spacing: 0.05em;
+        }
+
+        .section-h2 {
+            font-family: var(--sans);
+            font-size: clamp(40px, 5vw, 64px);
+            font-weight: 500;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+            margin-bottom: 64px;
+            text-align: center;
+        }
+
+        .section-h2 em {
+            font-family: var(--serif);
+            font-style: italic;
+            font-weight: 400;
+            color: var(--muted);
+        }
+
+        /* COMPARISON & SERVICES GRID */
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .comp-col {
+            background: var(--off-black);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 48px;
+            transition: transform 0.3s;
+        }
+
+        .comp-col.highlight {
+            background: linear-gradient(135deg, rgba(26, 16, 16, 0.8), rgba(20, 10, 10, 0.9));
+            border: 1px solid rgba(232, 76, 30, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .comp-col.highlight::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background: radial-gradient(circle at top right, var(--accent-glow) 0%, transparent 60%);
+        }
+
+        .comp-title {
+            font-size: 18px;
+            font-weight: 500;
+            margin-bottom: 32px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .comp-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            color: var(--muted);
+            font-size: 15px;
+        }
+
+        .comp-item:last-child {
+            border: none;
+        }
+
+        .highlight .comp-item {
+            color: var(--white);
+        }
+
+        .comp-icon {
+            font-size: 14px;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .comp-icon.x {
+            background: rgba(255, 255, 255, 0.05);
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .comp-icon.check {
+            background: rgba(232, 76, 30, 0.1);
+            color: var(--accent);
+        }
+
+        /* SERVICES BENTO */
+        .bento-header {
+            text-align: center;
+            margin-bottom: 64px;
+        }
+
+        .bento-header h2 {
+            font-family: var(--sans);
+            font-size: clamp(40px, 5vw, 64px);
+            font-weight: 500;
+            line-height: 1.1;
+            color: var(--white);
+            margin-bottom: 16px;
+            letter-spacing: -0.02em;
+        }
+
+        .bento-header h2 em {
+            font-family: var(--serif);
+            font-style: italic;
+            font-weight: 400;
+            color: var(--muted);
+        }
+
+        .bento-header p {
+            font-size: 16px;
+            color: var(--muted);
+            max-width: 650px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .bento-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 32px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: border-color 0.3s ease;
+        }
+
+        .bento-card:hover {
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .bento-card.c1 {
+            grid-column: span 6;
+            min-height: 380px;
+        }
+
+        .bento-card.c2 {
+            grid-column: span 6;
+            min-height: 380px;
+        }
+
+        .bento-card.c3 {
+            grid-column: span 5;
+            min-height: 420px;
+        }
+
+        .bento-card.c4 {
+            grid-column: span 7;
+            min-height: 420px;
+        }
+
+        @media (max-width: 900px) {
+            .bento-card {
+                grid-column: span 12 !important;
+                min-height: 350px !important;
+            }
+        }
+
+        .bento-title {
+            font-size: 28px;
+            font-weight: 500;
+            color: var(--white);
+            margin-bottom: 2px;
+            z-index: 2;
+        }
+
+        .bento-desc {
+            font-size: 16px;
+            color: var(--muted);
+            line-height: 1.3;
+            z-index: 2;
+            max-width: 95%;
+        }
+
+        /* CARD 1: Omni-Channel */
+        .b-v1 {
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            right: 0;
+            height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1;
+            -webkit-mask-image: linear-gradient(to top, transparent, black 80%);
+            mask-image: linear-gradient(to top, transparent, black 80%);
+        }
+
+        .b-v1-bg {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+            opacity: 0.05;
+            position: absolute;
+            width: 150%;
+        }
+
+        .b-v1-box {
+            width: 60px;
+            height: 40px;
+            background: var(--white);
+            border-radius: 8px;
+        }
+
+        .b-v1-core {
+            width: 80px;
+            height: 80px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, var(--accent2), var(--accent));
+            box-shadow: 0 0 60px rgba(232, 76, 30, 0.65), 0 0 20px rgba(232, 76, 30, 0.4);
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .b-v1-core svg {
+            width: 32px;
+            height: 32px;
+            fill: var(--white);
+        }
+
+        /* CARD 2: Automations */
+        .b-v2 {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            right: 0;
+            height: 220px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1;
+        }
+
+        .v2-center {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent2), var(--accent));
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 60px rgba(232, 76, 30, 0.65), 0 0 20px rgba(232, 76, 30, 0.4);
+            position: relative;
+        }
+
+        .v2-center svg {
+            width: 24px;
+            height: 24px;
+            fill: var(--white);
+        }
+
+        .v2-ring1 {
+            position: absolute;
+            width: 140px;
+            height: 140px;
+            border: 1px solid rgba(232, 76, 30, 0.2);
+            border-radius: 50%;
+        }
+
+        .v2-ring2 {
+            position: absolute;
+            width: 240px;
+            height: 240px;
+            border: 1px dashed rgba(232, 76, 30, 0.15);
+            border-radius: 50%;
+        }
+
+        .v2-node {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background: var(--off-black);
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .v2-node img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.8;
+            filter: grayscale(100%);
+        }
+
+        .n1 {
+            top: -60px;
+            left: 50px;
+        }
+
+        .n2 {
+            bottom: -40px;
+            right: 80px;
+            border-color: var(--accent);
+            z-index: 3;
+        }
+
+        .n3 {
+            top: 30px;
+            right: -40px;
+        }
+
+        .n4 {
+            bottom: -20px;
+            left: -50px;
+        }
+
+        /* CARD 3: List */
+        .b-v3 {
+            margin-top: 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 2;
+        }
+
+        .v3-row {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .v3-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .v3-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            overflow: hidden;
+        }
+
+        .v3-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .v3-text h4 {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--white);
+            margin-bottom: 2px;
+        }
+
+        .v3-text p {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .v3-badge {
+            font-size: 10px;
+            padding: 4px 10px;
+            border-radius: 100px;
+            font-weight: 600;
+        }
+
+        .v3-badge.scale {
+            background: rgba(46, 204, 113, 0.1);
+            color: #2ecc71;
+            border: 1px solid rgba(46, 204, 113, 0.15);
+        }
+
+        .v3-badge.pause {
+            background: rgba(231, 76, 60, 0.1);
+            color: #e74c3c;
+            border: 1px solid rgba(231, 76, 60, 0.15);
+        }
+
+        /* CARD 4: Chart */
+        .b-v4 {
+            margin-top: auto;
+            height: 220px;
+            background: rgba(255, 255, 255, 0.01);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            padding: 24px 24px 24px 44px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 12px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .v4-group {
+            display: flex;
+            align-items: flex-end;
+            gap: 6px;
+            height: 100%;
+            flex: 1;
+        }
+
+        .v4-bar {
+            width: 100%;
+            border-radius: 4px 4px 0 0;
+            position: relative;
+        }
+
+        .v4-bar.spend {
+            height: var(--h);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .v4-bar.roas {
+            height: var(--h);
+            background: var(--accent);
+        }
+
+        .v4-tooltip {
+            position: absolute;
+            top: 30px;
+            left: 60%;
+            transform: translateX(-50%);
+            background: var(--accent);
+            color: var(--white);
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 13px;
+            box-shadow: 0 10px 30px rgba(232, 76, 30, 0.4);
+            z-index: 10;
+        }
+
+        .v4-tooltip-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 24px;
+            margin-bottom: 4px;
+        }
+
+        .v4-tooltip-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .v4-tooltip-val {
+            font-weight: 600;
+        }
+
+        .v4-legend {
+            position: absolute;
+            top: 16px;
+            right: 24px;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.4);
+            display: flex;
+            gap: 12px;
+        }
+
+        .leg-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .leg-box {
+            width: 8px;
+            height: 8px;
+            border-radius: 2px;
+        }
+
+        .leg-box.spend {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .leg-box.roas {
+            background: var(--accent);
+        }
+
+        .v4-y-axis {
+            position: absolute;
+            left: 12px;
+            top: 24px;
+            bottom: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.2);
+        }
+
+
+        /* PROCESS */
+        .process-steps {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .process-step {
+            padding: 48px 32px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            position: relative;
+            transition: border-color 0.3s ease, transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .process-step::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            height: 1px;
+            background: radial-gradient(circle, rgba(232, 76, 30, 0.4) 0%, transparent 100%);
+            z-index: 1;
+        }
+
+        .process-step::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 40%;
+            background: linear-gradient(180deg, rgba(232, 76, 30, 0.03) 0%, transparent 100%);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .process-step:hover {
+            border-color: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .step-icon-wrapper {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 24px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .step-icon-wrapper svg {
+            width: 26px;
+            height: 26px;
+            stroke: var(--accent);
+            opacity: 0.9;
+        }
+
+        .process-step h3 {
+            font-family: var(--sans);
+            font-size: 20px;
+            font-weight: 500;
+            margin-bottom: 12px;
+            color: var(--white);
+            letter-spacing: -0.01em;
+            position: relative;
+            z-index: 2;
+        }
+
+        .process-step p {
+            font-size: 14px;
+            color: var(--muted);
+            line-height: 1.6;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* TESTIMONIALS (TINDER SWIPE) */
+        .testimonials-section {
+            padding: 100px 60px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tinder-container {
+            position: relative;
+            width: 100%;
+            max-width: 440px;
+            height: 480px;
+            margin: 64px auto 0;
+            perspective: 1000px;
+        }
+
+        .tinder-card {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #111111;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            cursor: grab;
+            will-change: transform, opacity;
+            display: flex;
+            flex-direction: column;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: none;
+            overflow: hidden;
+        }
+
+        .tinder-card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background: radial-gradient(circle at top right, var(--accent-glow) 0%, transparent 60%);
+            border-radius: 16px;
+            z-index: 1;
+        }
+
+        .tinder-card:active {
+            cursor: grabbing;
+        }
+
+        .x-card-inner {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            text-align: left;
+            height: 100%;
+            position: relative;
+            z-index: 2;
+        }
+
+        .x-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .x-author {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .x-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #222;
+        }
+
+        .x-author-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .x-name {
+            font-family: var(--sans);
+            font-size: 15px;
+            font-weight: 600;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .verified-icon {
+            width: 16px;
+            height: 16px;
+            fill: #1D9BF0;
+        }
+
+        .x-handle {
+            font-size: 14px;
+            color: #71767B;
+        }
+
+        .x-logo {
+            width: 20px;
+            height: 20px;
+            fill: #71767B;
+        }
+
+        .x-content {
+            font-size: 15px;
+            color: #E7E9EA;
+            line-height: 1.5;
+        }
+
+        .x-date {
+            font-size: 14px;
+            color: #71767B;
+            margin-top: auto;
+        }
+
+        .x-nested {
+            border: 1px solid #2F3336;
+            border-radius: 12px;
+            padding: 12px;
+            margin-top: 12px;
+            pointer-events: none;
+        }
+
+        .x-nested-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .x-nested-avatar {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .x-nested-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .x-nested-handle {
+            font-size: 13px;
+            color: #71767B;
+        }
+
+        .x-nested-content {
+            font-size: 14px;
+            color: #E7E9EA;
+            line-height: 1.4;
+        }
+
+        /* RESULTS */
+        .results-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .result-card {
+            background: linear-gradient(135deg, rgba(26, 16, 16, 0.8), rgba(20, 10, 10, 0.9));
+            border: 1px solid rgba(232, 76, 30, 0.3);
+            border-radius: 24px;
+            padding: 56px 48px;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .result-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: radial-gradient(circle, rgba(232, 76, 30, 0.4) 0%, transparent 100%);
+            z-index: 1;
+        }
+
+        .result-card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background: radial-gradient(circle at top right, var(--accent-glow) 0%, transparent 60%);
+            border-radius: 24px;
+            z-index: 0;
+        }
+
+        .result-card:hover {
+            border-color: rgba(232, 76, 30, 0.5);
+            transform: translateY(-4px);
+        }
+
+        .result-metric {
+            font-family: var(--display);
+            font-size: clamp(72px, 10vw, 96px);
+            line-height: 1;
+            color: var(--white);
+            margin-bottom: 16px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            position: relative;
+            z-index: 2;
+        }
+
+        .result-metric span {
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        .result-label {
+            font-family: var(--sans);
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--white);
+            margin-bottom: 16px;
+            letter-spacing: -0.01em;
+            position: relative;
+            z-index: 2;
+        }
+
+        .result-desc {
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--muted);
+            position: relative;
+            z-index: 2;
+        }
+
+        /* MODERN FOOTER */
+        .footer-modern {
+            background: var(--black);
+            padding: 100px 60px;
+            border-top: 1px solid var(--border);
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 40px;
+            max-width: 1400px;
+            margin: 0 auto 40px;
+        }
+
+        .footer-col h4 {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--muted);
+            margin-bottom: 28px;
+            font-weight: 500;
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
+            padding-left: 16px;
+        }
+
+        .footer-col ul {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            padding-left: 16px;
+        }
+
+        .footer-col ul a {
+            font-size: 18px;
+            color: var(--white);
+            text-decoration: none;
+            font-weight: 400;
+            transition: color 0.2s, transform 0.2s;
+            display: inline-block;
+        }
+
+        .footer-col ul a:hover {
+            color: var(--accent);
+            transform: translateX(4px);
+        }
+
+        .footer-btns {
+            margin-top: 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            padding-left: 16px;
+        }
+
+        .btn-pill {
+            display: inline-block;
+            padding: 10px 24px;
+            border-radius: 100px;
+            font-size: 11px;
+            font-weight: 600;
+            text-decoration: none;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            transition: 0.2s;
+        }
+
+        .btn-pill.solid {
+            background: #f5f2ee;
+            color: #090909;
+        }
+
+        .btn-pill.outline {
+            border: 1px solid var(--border);
+            color: var(--white);
+        }
+
+        .btn-pill:hover {
+            transform: scale(1.02);
+            opacity: 0.9;
+        }
+
+        .footer-bottom {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            padding-top: 40px;
+        }
+
+        .footer-brand svg {
+            height: 160px;
+            width: auto;
+            fill: var(--white);
+        }
+
+        .footer-meta {
+            text-align: right;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+            /* Bring up slightly */
+        }
+
+        .footer-meta a,
+        .footer-meta span {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.3);
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            transition: color 0.2s;
+            white-space: nowrap;
+        }
+
+        .footer-meta a:hover {
+            color: var(--white);
+        }
+
+        @media (max-width: 1100px) {
+            .footer-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 700px) {
+            .footer-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 48px;
+            }
+
+            .footer-brand svg {
+                height: 100px;
+            }
+        }
+
+        /* BUTTONS RESTORATION */
+        .btn-ghost {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--white);
+            padding: 14px 32px;
+            border-radius: 100px;
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: background 0.2s, transform 0.2s;
+        }
+
+        .btn-ghost:hover {
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateY(-1px);
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: var(--white);
+            padding: 14px 32px;
+            border-radius: 100px;
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: background 0.2s, transform 0.2s;
+            box-shadow: 0 4px 20px var(--accent-glow);
+        }
+
+        .btn-primary:hover {
+            background: #d44018;
+            transform: translateY(-2px);
+        }
+
+        /* FINAL CTA SECTION */
+        .cta-final-section {
+            padding: 100px 60px;
+            background: var(--black);
+        }
+
+        .cta-card {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: linear-gradient(180deg, #111 0%, #0c0c0c 100%);
+            border: 1px solid var(--border);
+            border-radius: 40px;
+            padding: 120px 24px;
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+            z-index: 1;
+        }
+
+        .cta-card-stars {
+            position: absolute;
+            inset: 0;
+            background-image:
+                radial-gradient(1px 1px at 10% 10%, #fff, transparent),
+                radial-gradient(1px 1px at 20% 40%, #fff, transparent),
+                radial-gradient(1.5px 1.5px at 30% 70%, #fff, transparent),
+                radial-gradient(1px 1px at 40% 20%, #fff, transparent),
+                radial-gradient(1.2px 1.2px at 50% 80%, #fff, transparent),
+                radial-gradient(1px 1px at 60% 30%, #fff, transparent),
+                radial-gradient(1.5px 1.5px at 70% 60%, #fff, transparent),
+                radial-gradient(1px 1px at 80% 10%, #fff, transparent),
+                radial-gradient(1.2px 1.2px at 90% 50%, #fff, transparent),
+                radial-gradient(1px 1px at 95% 90%, #fff, transparent);
+            background-size: 50% 50%;
+            opacity: 0.35;
+            pointer-events: none;
+        }
+
+        .cta-card-beams {
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(135deg, transparent 30%, rgba(255, 255, 255, 0.03) 40%, transparent 50%),
+                linear-gradient(45deg, transparent 10%, rgba(255, 255, 255, 0.02) 20%, transparent 30%);
+            pointer-events: none;
+            opacity: 0.6;
+        }
+
+        .cta-card-horizon {
+            position: absolute;
+            bottom: -180px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 160%;
+            height: 320px;
+            background: radial-gradient(ellipse at top, var(--accent) 0%, transparent 70%);
+            filter: blur(40px);
+            opacity: 0.25;
+            border-radius: 50%;
+            z-index: -2;
+        }
+
+        .cta-card-horizon-line {
+            position: absolute;
+            bottom: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 130%;
+            height: 200px;
+            border-top: 1.5px solid var(--accent);
+            border-radius: 50%;
+            box-shadow: 0 -10px 40px -5px var(--accent);
+            opacity: 0.9;
+            z-index: -1;
+            filter: drop-shadow(0 0 8px var(--accent));
+        }
+
+        .cta-title {
+            font-family: var(--sans);
+            font-size: clamp(40px, 6vw, 72px);
+            font-weight: 500;
+            color: var(--white);
+            letter-spacing: -0.03em;
+            margin-bottom: 24px;
+            line-height: 1;
+        }
+
+        .cta-title span {
+            color: var(--accent);
+        }
+
+        .cta-subtitle {
+            font-size: 18px;
+            color: var(--muted);
+            max-width: 600px;
+            margin: 0 auto 48px;
+            line-height: 1.6;
+        }
+
+        .cta-actions {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .btn-cta-primary {
+            background: var(--accent);
+            color: var(--white);
+            padding: 16px 36px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: transform 0.2s, background 0.2s;
+            box-shadow: 0 4px 20px var(--accent-glow);
+        }
+
+        .btn-cta-primary:hover {
+            transform: translateY(-2px);
+            background: #d44018;
+        }
+
+        .btn-cta-secondary {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border);
+            color: var(--white);
+            padding: 16px 36px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+
+        .btn-cta-secondary:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="cursor" id="cursor"></div>
+    <div class="cursor-ring" id="cursorRing"></div>
+
+    <div class="nav-wrapper">
+        <nav>
+            <div class="nav-links">
+                <a href="#about">About Us</a>
+                <a href="#results">Results</a>
+                <a href="#services">Services</a>
+                <a href="#process">Process</a>
+                <a href="#faq">FAQs</a>
+            </div>
+            <a href="#" class="nav-cta">Book a call</a>
+        </nav>
+    </div>
+
+    <section class="hero">
+        <div class="hero-glow-layer"></div>
+        <div class="hero-glow-core"></div>
+
+        <div class="hero-proof">
+            <div class="avatars">
+                <div style="background-image: url('https://i.pravatar.cc/150?img=1');"></div>
+                <div style="background-image: url('https://i.pravatar.cc/150?img=2');"></div>
+                <div style="background-image: url('https://i.pravatar.cc/150?img=3');"></div>
+                <div style="background-image: url('https://i.pravatar.cc/150?img=4');"></div>
+            </div>
+            <div class="hero-proof-text"><span>★★★★</span> 200+ businesses scaled</div>
+        </div>
+
+        <h1 class="hero-h1">Ready to <em>scale</em> your<br>brand with paid ads?</h1>
+        <p class="hero-sub">If you want to achieve ground-breaking growth with increased sales and profitability with
+            paid
+            ads, then you're in the right place.</p>
+
+        <div class="hero-actions">
+            <a href="#" class="btn-primary">Book a call</a>
+            <a href="#" class="btn-ghost">Learn More</a>
+        </div>
+    </section>
+
+    <section class="trusted-section">
+        <div class="trusted-glow"></div>
+        <div class="trusted-content">
+            <span class="section-tag reveal" style="display: inline-block; margin-bottom: 32px;">Social Proof</span>
+            <h2 class="trusted-heading reveal">
+                <span class="trusted-muted">Trusted by experts.</span><br>
+                <span class="trusted-solid">Used by the leaders.</span>
+            </h2>
+
+            <div class="trusted-marquee reveal">
+                <div class="trusted-track">
+                    <!-- Slide 1 -->
+                    <div class="trusted-slide">
+                        <img src="https://svgl.app/library/nvidia-wordmark-light.svg" alt="Nvidia" />
+                        <img src="https://svgl.app/library/supabase_wordmark_light.svg" alt="Supabase" />
+                        <img src="https://svgl.app/library/openai_wordmark_light.svg" alt="OpenAI" />
+                        <img src="https://svgl.app/library/turso-wordmark-light.svg" alt="Turso" />
+                        <img src="https://svgl.app/library/vercel_wordmark.svg" alt="Vercel" />
+                        <img src="https://svgl.app/library/github_wordmark_light.svg" alt="GitHub" />
+                        <img src="https://svgl.app/library/claude-ai-wordmark-icon_light.svg" alt="Claude" />
+                        <img src="https://svgl.app/library/clerk-wordmark-light.svg" alt="Clerk" />
+                    </div>
+                    <!-- Slide 2 -->
+                    <div class="trusted-slide">
+                        <img src="https://svgl.app/library/nvidia-wordmark-light.svg" alt="Nvidia" />
+                        <img src="https://svgl.app/library/supabase_wordmark_light.svg" alt="Supabase" />
+                        <img src="https://svgl.app/library/openai_wordmark_light.svg" alt="OpenAI" />
+                        <img src="https://svgl.app/library/turso-wordmark-light.svg" alt="Turso" />
+                        <img src="https://svgl.app/library/vercel_wordmark.svg" alt="Vercel" />
+                        <img src="https://svgl.app/library/github_wordmark_light.svg" alt="GitHub" />
+                        <img src="https://svgl.app/library/claude-ai-wordmark-icon_light.svg" alt="Claude" />
+                        <img src="https://svgl.app/library/clerk-wordmark-light.svg" alt="Clerk" />
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section style="text-align: center;">
+        <span class="section-tag reveal">Comparison</span>
+        <h2 class="section-h2 reveal">But, why would you<br>want to work <em>with us?</em></h2>
+        <div class="comparison-grid reveal">
+            <div class="comp-col">
+                <div class="comp-title">Other Agencies</div>
+                <div class="comp-item"><span class="comp-icon x">✕</span> Reactive communication</div>
+                <div class="comp-item"><span class="comp-icon x">✕</span> Single channel approach</div>
+                <div class="comp-item"><span class="comp-icon x">✕</span> Copy paste growth strategies</div>
+                <div class="comp-item"><span class="comp-icon x">✕</span> Lack of research on your industry</div>
+                <div class="comp-item"><span class="comp-icon x">✕</span> Outsourced to junior talent</div>
+            </div>
+            <div class="comp-col highlight">
+                <div class="comp-title">
+                    <div class="dot" style="width:12px;height:12px;background:var(--accent);border-radius:50%;"></div>
+                    Meridian
+                </div>
+                <div class="comp-item"><span class="comp-icon check">✓</span> Constant, proactive communication</div>
+                <div class="comp-item"><span class="comp-icon check">✓</span> Omni channel approach</div>
+                <div class="comp-item"><span class="comp-icon check">✓</span> Tailored best-fit solutions</div>
+                <div class="comp-item"><span class="comp-icon check">✓</span> Provides industry specific expertise</div>
+                <div class="comp-item"><span class="comp-icon check">✓</span> Experts with 10+ years of experience</div>
+            </div>
+        </div>
+    </section>
+
+    <section id="services">
+        <div class="bento-header reveal">
+            <span class="section-tag" style="display: inline-block; margin-bottom: 32px;">Services</span>
+            <h2>Growth for the <em>Modern</em> Brand</h2>
+            <p>Tailored marketing strategies designed to simplify scaling, boost efficiency, and support your brand's
+                growth
+                in today's fast-paced digital world.</p>
+        </div>
+
+        <div class="bento-grid reveal">
+
+            <!-- Card 1 -->
+            <div class="bento-card c1">
+                <h3 class="bento-title">Omni-Channel Advertising</h3>
+                <p class="bento-desc">Connect seamlessly across Google, Meta, and TikTok to capture demand everywhere
+                    your
+                    customers scroll.</p>
+                <div class="b-v1">
+                    <div class="b-v1-bg">
+                        <div class="b-v1-box"></div>
+                        <div class="b-v1-box"></div>
+                        <div class="b-v1-box"></div>
+                        <div class="b-v1-box"></div>
+                        <div class="b-v1-box"></div>
+                        <div class="b-v1-box"></div>
+                        <div class="b-v1-box"></div>
+                        <div class="b-v1-box"></div>
+                        <div class="b-v1-box"></div>
+                        <div class="b-v1-box"></div>
+                        <div class="b-v1-box"></div>
+                        <div class="b-v1-box"></div>
+                    </div>
+                    <div class="b-v1-core">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 2L2 22h20L12 2zm0 4.5l6.5 13h-13L12 6.5z" />
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2 -->
+            <div class="bento-card c2">
+                <h3 class="bento-title">Automated Campaign Scaling</h3>
+                <p class="bento-desc">Set predefined rules to automatically scale winning creatives and pause
+                    underperforming
+                    assets.</p>
+                <div class="b-v2">
+                    <div class="v2-ring2"></div>
+                    <div class="v2-ring1"></div>
+                    <div class="v2-center">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.5v-9l6 4.5-6 4.5z" />
+                        </svg>
+                        <div class="v2-node n1"><img src="https://i.pravatar.cc/100?img=11" alt="avatar"></div>
+                        <div class="v2-node n2"><img src="https://i.pravatar.cc/100?img=12" alt="avatar"></div>
+                        <div class="v2-node n3"><img src="https://i.pravatar.cc/100?img=13" alt="avatar"></div>
+                        <div class="v2-node n4"><img src="https://i.pravatar.cc/100?img=14" alt="avatar"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 3 -->
+            <div class="bento-card c3">
+                <h3 class="bento-title">Continuous A/B Testing</h3>
+                <p class="bento-desc">We rapidly iterate to find winning ad angles without budget waste.</p>
+                <div class="b-v3">
+                    <div class="v3-row">
+                        <div class="v3-info">
+                            <div class="v3-avatar"><img src="https://i.pravatar.cc/100?img=33" alt="avatar"></div>
+                            <div class="v3-text">
+                                <h4>UGC Video Hook V2</h4>
+                                <p>Ctr: 4.8% — ROAS: 3.2x</p>
+                            </div>
+                        </div>
+                        <div class="v3-badge scale">Scale</div>
+                    </div>
+                    <div class="v3-row">
+                        <div class="v3-info">
+                            <div class="v3-avatar"><img src="https://i.pravatar.cc/100?img=44" alt="avatar"></div>
+                            <div class="v3-text">
+                                <h4>Static Image Banner</h4>
+                                <p>Ctr: 1.2% — ROAS: 0.8x</p>
+                            </div>
+                        </div>
+                        <div class="v3-badge pause">Pause</div>
+                    </div>
+                    <div class="v3-row">
+                        <div class="v3-info">
+                            <div class="v3-avatar"><img src="https://i.pravatar.cc/100?img=42" alt="avatar"></div>
+                            <div class="v3-text">
+                                <h4>Founder Story Ad</h4>
+                                <p>Ctr: 5.4% — ROAS: 4.5x</p>
+                            </div>
+                        </div>
+                        <div class="v3-badge scale">Scale</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 4 -->
+            <div class="bento-card c4">
+                <h3 class="bento-title">Real-Time ROI Tracking</h3>
+                <p class="bento-desc">Monitor revenue continuously, giving you instant clarity over your ad spend.</p>
+                <div class="b-v4">
+                    <div class="v4-legend">
+                        <div class="leg-item">
+                            <div class="leg-box spend"></div> Spend
+                        </div>
+                        <div class="leg-item">
+                            <div class="leg-box roas"></div> Revenue
+                        </div>
+                    </div>
+                    <div class="v4-y-axis">
+                        <span>40k</span><span>30k</span><span>20k</span><span>10k</span><span>0k</span>
+                    </div>
+
+                    <div class="v4-group">
+                        <div class="v4-bar spend" style="--h: 40%;"></div>
+                        <div class="v4-bar roas" style="--h: 60%;"></div>
+                    </div>
+                    <div class="v4-group">
+                        <div class="v4-bar spend" style="--h: 30%;"></div>
+                        <div class="v4-bar roas" style="--h: 50%;"></div>
+                    </div>
+                    <div class="v4-group">
+                        <div class="v4-bar spend" style="--h: 50%;"></div>
+                        <div class="v4-bar roas" style="--h: 90%;"></div>
+                    </div>
+                    <div class="v4-group">
+                        <div class="v4-bar spend" style="--h: 45%;"></div>
+                        <div class="v4-bar roas" style="--h: 80%;"></div>
+                    </div>
+                    <div class="v4-group">
+                        <div class="v4-bar spend" style="--h: 60%;"></div>
+                        <div class="v4-bar roas" style="--h: 100%;"></div>
+                    </div>
+                    <div class="v4-group">
+                        <div class="v4-bar spend" style="--h: 35%;"></div>
+                        <div class="v4-bar roas" style="--h: 70%;"></div>
+                    </div>
+                    <div class="v4-group">
+                        <div class="v4-bar spend" style="--h: 40%;"></div>
+                        <div class="v4-bar roas" style="--h: 85%;"></div>
+                    </div>
+
+                    <div class="v4-tooltip">
+                        <div style="font-size: 11px; opacity: 0.8; margin-bottom: 8px;">June 16</div>
+                        <div class="v4-tooltip-row"><span>Rev:</span><span class="v4-tooltip-val">$32,640</span></div>
+                        <div class="v4-tooltip-row"><span>Spend:</span><span class="v4-tooltip-val">$7,450</span></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section id="process">
+        <div style="text-align: center; margin-bottom: 64px;">
+            <span class="section-tag reveal">How We Work</span>
+            <h2 class="section-h2 reveal" style="margin-bottom: 16px;">Our <em>Process</em></h2>
+            <p class="reveal" style="color: var(--muted); max-width: 600px; margin: 0 auto; font-size: 16px;">
+                We combine data-driven insights with creative excellence to systematically scale your brand's online
+                presence and revenue.
+            </p>
+        </div>
+        <div class="process-steps reveal">
+            <div class="process-step">
+                <div class="step-icon-wrapper">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                </div>
+                <h3>Discovery & Audit</h3>
+                <p>We dive deep into your brand's ecosystem, analyzing competitors and historical data to uncover hidden
+                    growth opportunities.</p>
+            </div>
+            <div class="process-step">
+                <div class="step-icon-wrapper">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+                    </svg>
+                </div>
+                <h3>Strategy & Launch</h3>
+                <p>We develop a tailored, omni-channel blueprint and deploy high-converting creative assets designed to
+                    capture demand instantly.</p>
+            </div>
+            <div class="process-step">
+                <div class="step-icon-wrapper">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                        <polyline points="17 6 23 6 23 12"></polyline>
+                    </svg>
+                </div>
+                <h3>Scale & Optimize</h3>
+                <p>Through continuous A/B testing and real-time ROI tracking, we ruthlessly optimize your campaigns for
+                    maximum profitability and scale.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="testimonials" class="testimonials-section">
+        <div style="text-align: center;">
+            <span class="section-tag reveal">Testimonials</span>
+            <h2 class="section-h2 reveal" style="margin-bottom: 16px;">What people are <em>saying</em></h2>
+            <p class="reveal" style="color: var(--muted); max-width: 600px; margin: 0 auto; font-size: 16px;">
+                Don't just take our word for it. Swipe through some of the amazing feedback from our incredible
+                partners.
+            </p>
+        </div>
+
+        <div class="tinder-container reveal" id="tinderContainer">
+            <!-- Card 5 (Bottom) -->
+            <div class="tinder-card">
+                <div class="x-card-inner">
+                    <div class="x-header">
+                        <div class="x-author">
+                            <img src="https://i.pravatar.cc/150?img=60" alt="Avatar" class="x-avatar">
+                            <div class="x-author-info">
+                                <div class="x-name">Jason P. <svg class="verified-icon" viewBox="0 0 24 24">
+                                        <path
+                                            d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm-1.9 14.7L6 12.6l1.5-1.5 2.6 2.6 6.4-6.4 1.5 1.5-7.9 7.9z" />
+                                    </svg></div>
+                                <div class="x-handle">@jasonp_scale</div>
+                            </div>
+                        </div>
+                        <svg class="x-logo" viewBox="0 0 24 24">
+                            <path
+                                d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                        </svg>
+                    </div>
+                    <div class="x-content">
+                        Since partnering with Meridian, our lead volume has grown 400% while maintaining the exact same
+                        CAC. Absolute legends correctly navigating Meta.
+                    </div>
+                    <div class="x-date">Dec 01, 2025</div>
+                </div>
+            </div>
+
+            <!-- Card 4 -->
+            <div class="tinder-card">
+                <div class="x-card-inner">
+                    <div class="x-header">
+                        <div class="x-author">
+                            <img src="https://i.pravatar.cc/150?img=47" alt="Avatar" class="x-avatar">
+                            <div class="x-author-info">
+                                <div class="x-name">Elena R. <svg class="verified-icon" viewBox="0 0 24 24">
+                                        <path
+                                            d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm-1.9 14.7L6 12.6l1.5-1.5 2.6 2.6 6.4-6.4 1.5 1.5-7.9 7.9z" />
+                                    </svg></div>
+                                <div class="x-handle">@elena_dtc</div>
+                            </div>
+                        </div>
+                        <svg class="x-logo" viewBox="0 0 24 24">
+                            <path
+                                d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                        </svg>
+                    </div>
+                    <div class="x-content">
+                        I used to burn money on FB ads. Meridian came in with their automated scaling model and
+                        stabilized our CAC immediately. Best agency I've worked with. 🔥
+                    </div>
+                    <div class="x-date">Nov 28, 2025</div>
+                </div>
+            </div>
+
+            <!-- Card 3 -->
+            <div class="tinder-card">
+                <div class="x-card-inner">
+                    <div class="x-header">
+                        <div class="x-author">
+                            <img src="https://i.pravatar.cc/150?img=33" alt="Avatar" class="x-avatar">
+                            <div class="x-author-info">
+                                <div class="x-name">Michael C. <svg class="verified-icon" viewBox="0 0 24 24">
+                                        <path
+                                            d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm-1.9 14.7L6 12.6l1.5-1.5 2.6 2.6 6.4-6.4 1.5 1.5-7.9 7.9z" />
+                                    </svg></div>
+                                <div class="x-handle">@chang_michael</div>
+                            </div>
+                        </div>
+                        <svg class="x-logo" viewBox="0 0 24 24">
+                            <path
+                                d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                        </svg>
+                    </div>
+                    <div class="x-content">
+                        We've finally hit $1M ARR mostly powered by top-of-funnel TikTok + Google ads set up by the
+                        amazing team at Meridian. 🚀🚀
+                    </div>
+                    <div class="x-date">Nov 15, 2025</div>
+                </div>
+            </div>
+
+            <!-- Card 2 -->
+            <div class="tinder-card">
+                <div class="x-card-inner">
+                    <div class="x-header">
+                        <div class="x-author">
+                            <img src="https://i.pravatar.cc/150?img=12" alt="Avatar" class="x-avatar">
+                            <div class="x-author-info">
+                                <div class="x-name">Sarah Jenkins <svg class="verified-icon" viewBox="0 0 24 24">
+                                        <path
+                                            d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm-1.9 14.7L6 12.6l1.5-1.5 2.6 2.6 6.4-6.4 1.5 1.5-7.9 7.9z" />
+                                    </svg></div>
+                                <div class="x-handle">@sjenkins</div>
+                            </div>
+                        </div>
+                        <svg class="x-logo" viewBox="0 0 24 24">
+                            <path
+                                d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                        </svg>
+                    </div>
+                    <div class="x-content">
+                        No other agency cares this deeply about their clients' ad performance. I highly recommend
+                        working with Meridian.
+                    </div>
+                    <div class="x-date">Oct 30, 2025</div>
+                </div>
+            </div>
+
+            <!-- Card 1 (Top) -->
+            <div class="tinder-card">
+                <div class="x-card-inner">
+                    <div class="x-header">
+                        <div class="x-author">
+                            <img src="https://i.pravatar.cc/150?u=a042581f4e29026704a" alt="Avatar" class="x-avatar">
+                            <div class="x-author-info">
+                                <div class="x-name">Dorian <svg class="verified-icon" viewBox="0 0 24 24">
+                                        <path
+                                            d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm-1.9 14.7L6 12.6l1.5-1.5 2.6 2.6 6.4-6.4 1.5 1.5-7.9 7.9z" />
+                                    </svg></div>
+                                <div class="x-handle">@dorian_baffier</div>
+                            </div>
+                        </div>
+                        <svg class="x-logo" viewBox="0 0 24 24">
+                            <path
+                                d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                        </svg>
+                    </div>
+                    <div class="x-content">
+                        Working with Meridian has been a game-changer for our brand. Their strategic approach to digital
+                        marketing, combined with a deep understanding of audience behavior, helped us significantly
+                        improve our online presence and engagement.
+                    </div>
+                    <div class="x-date">Jan 18, 2025</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="results">
+        <div style="text-align: center; margin-bottom: 80px;">
+            <span class="section-tag reveal">Proven Track Record</span>
+            <h2 class="section-h2 reveal">Client <em>Results</em></h2>
+        </div>
+        <div class="results-grid reveal">
+            <div class="result-card">
+                <div class="result-metric"><span>6.2</span>×</div>
+                <div class="result-label">Return on Ad Spend (ROAS)</div>
+                <div class="result-desc">Scaled a DTC fashion brand from $40K/mo to $280K/mo in revenue within 5 months
+                    using Meta + Google in tandem.</div>
+            </div>
+            <div class="result-card">
+                <div class="result-metric"><span>↓</span>68%</div>
+                <div class="result-label">Cost Per Acquisition</div>
+                <div class="result-desc">Reduced CPL from $420 to $134 for a SaaS platform by restructuring their Google
+                    Ads.</div>
+            </div>
+        </div>
+        <section class="cta-final-section">
+            <div class="cta-card reveal">
+                <div class="cta-card-stars"></div>
+                <div class="cta-card-beams"></div>
+                <div class="cta-card-horizon"></div>
+                <div class="cta-card-horizon-line"></div>
+
+                <h2 class="cta-title">Start Your Free <span>Trial Today</span></h2>
+                <p class="cta-subtitle">Unlock the full potential of your brand with our comprehensive digital marketing
+                    solutions, designed to drive growth, boost engagement, and maximize your online presence.</p>
+
+                <div class="cta-actions">
+                    <a href="#" class="btn-cta-primary">Register Now</a>
+                    <a href="#" class="btn-cta-secondary">Talk to sales</a>
+                </div>
+            </div>
+        </section>
+
+        <footer class="footer-modern">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>Products</h4>
+                    <ul>
+                        <li><a href="#">Ads Manager</a></li>
+                        <li><a href="#">Automation</a></li>
+                        <li><a href="#">Reporting</a></li>
+                        <li><a href="#">Creative Studio</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Solutions</h4>
+                    <ul>
+                        <li><a href="#">E-commerce</a></li>
+                        <li><a href="#">SaaS B2B</a></li>
+                        <li><a href="#">Lead Gen</a></li>
+                        <li><a href="#">Scale Strategy</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="#">Case Studies</a></li>
+                        <li><a href="#">Ad Library</a></li>
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">API Docs</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Developers</h4>
+                    <ul>
+                        <li><a href="#">Webhooks</a></li>
+                        <li><a href="#">Changelog</a></li>
+                        <li><a href="#">Status</a></li>
+                        <li><a href="#">Network</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Careers</a></li>
+                        <li><a href="#">Partners</a></li>
+                    </ul>
+                    <div class="footer-btns">
+                        <a href="#" class="btn-pill solid">Start for free</a>
+                        <a href="#" class="btn-pill outline">Book a demo</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <div class="footer-brand">
+                    <!-- Tightened SVG Logo for MERIDIAN - Mark to the Left -->
+                    <svg viewBox="0 0 1600 300" xmlns="http://www.w3.org/2000/svg">
+                        <g fill="currentColor">
+                            <!-- Scaled up blocks to match text height -->
+                            <rect x="0" y="60" width="110" height="50" rx="6" opacity="0.9" />
+                            <rect x="0" y="130" width="180" height="50" rx="6" opacity="0.9" />
+                            <rect x="130" y="60" width="50" height="50" rx="6" opacity="0.9" />
+                            <rect x="0" y="200" width="80" height="50" rx="6" opacity="0.6" />
+                        </g>
+                        <text x="250" y="230" font-family="DM Sans, sans-serif" font-size="240" font-weight="700"
+                            letter-spacing="-8" fill="currentColor">MERIDIAN</text>
+                    </svg>
+                </div>
+                <div class="footer-meta">
+                    <a href="#">Terms of Use</a>
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Security</a>
+                    <span>© MERIDIAN 2026</span>
+                </div>
+            </div>
+        </footer>
+
+        <script>
+            // Custom Cursor Logic
+            const cursor = document.getElementById('cursor');
+            const ring = document.getElementById('cursorRing');
+            document.addEventListener('mousemove', e => {
+                cursor.style.left = e.clientX + 'px';
+                cursor.style.top = e.clientY + 'px';
+
+                // Add slight delay to ring for smooth effect
+                setTimeout(() => {
+                    ring.style.left = e.clientX + 'px';
+                    ring.style.top = e.clientY + 'px';
+                }, 50);
+            });
+
+            // Scroll Reveal Observer
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+            // Tinder Swipe Logic
+            const tinderContainer = document.getElementById('tinderContainer');
+            if (tinderContainer) {
+                let activeCard = null;
+                let isDragging = false;
+                let startX = 0, startY = 0;
+                let currentX = 0, currentY = 0;
+
+                function initCards() {
+                    const visibleCards = Array.from(tinderContainer.querySelectorAll('.tinder-card:not(.removed)'));
+                    visibleCards.forEach((card, i) => {
+                        const rotations = [2, -4, 5, -3, 4];
+                        const xOffsets = [0, 8, -6, 4, -2];
+                        const rotation = rotations[i % rotations.length];
+                        const xOffset = xOffsets[i % xOffsets.length];
+
+                        card.style.zIndex = visibleCards.length - i;
+                        card.style.transform = `translate(${xOffset}px, ${i * 12}px) scale(${1 - (i * 0.05)}) rotate(${rotation}deg)`;
+                        card.style.opacity = i >= 4 ? 0 : (1 - (i * 0.15));
+                        card.style.transition = 'transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease';
+                    });
+                }
+                initCards();
+
+                tinderContainer.addEventListener('mousedown', handleDragStart);
+                tinderContainer.addEventListener('touchstart', handleDragStart, { passive: true });
+                document.addEventListener('mousemove', handleDragMove);
+                document.addEventListener('touchmove', handleDragMove, { passive: false });
+                document.addEventListener('mouseup', handleDragEnd);
+                document.addEventListener('touchend', handleDragEnd);
+
+                function handleDragStart(e) {
+                    const visibleCards = tinderContainer.querySelectorAll('.tinder-card:not(.removed)');
+                    if (!visibleCards.length) return;
+                    activeCard = visibleCards[0];
+
+                    if (!activeCard.contains(e.target)) {
+                        activeCard = null;
+                        return;
+                    }
+
+                    isDragging = true;
+                    startX = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
+                    startY = e.type === 'touchstart' ? e.touches[0].clientY : e.clientY;
+                    activeCard.style.transition = 'none';
+                }
+
+                function handleDragMove(e) {
+                    if (!isDragging || !activeCard) return;
+
+                    const clientX = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
+                    const clientY = e.type === 'touchmove' ? e.touches[0].clientY : e.clientY;
+
+                    currentX = clientX - startX;
+                    currentY = clientY - startY;
+
+                    if (e.type === 'touchmove' && Math.abs(currentX) > Math.abs(currentY)) {
+                        e.preventDefault();
+                    }
+
+                    const rotate = currentX * 0.05;
+                    activeCard.style.transform = `translate(${currentX}px, ${currentY}px) rotate(${rotate}deg)`;
+                }
+
+                function handleDragEnd() {
+                    if (!isDragging || !activeCard) return;
+                    isDragging = false;
+
+                    const threshold = window.innerWidth * 0.25;
+                    if (Math.abs(currentX) > Math.min(threshold, 150)) {
+                        const direction = currentX > 0 ? 1 : -1;
+                        activeCard.style.transition = 'transform 0.4s ease-out, opacity 0.4s ease-out';
+                        activeCard.style.transform = `translate(${direction * window.innerWidth}px, ${currentY}px) rotate(${direction * 45}deg)`;
+                        activeCard.style.opacity = '0';
+                        activeCard.classList.add('removed');
+
+                        setTimeout(() => {
+                            initCards();
+                            const remaining = tinderContainer.querySelectorAll('.tinder-card:not(.removed)');
+                            if (remaining.length === 0) {
+                                tinderContainer.querySelectorAll('.tinder-card').forEach(c => c.classList.remove('removed'));
+                                initCards();
+                            }
+                        }, 300);
+                    } else {
+                        activeCard.style.transition = 'transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+                        activeCard.style.transform = `translateY(0px) scale(1)`;
+                    }
+
+                    currentX = 0;
+                    currentY = 0;
+                    activeCard = null;
+                }
+            }
+        </script>
+</body>
+
+</html>
